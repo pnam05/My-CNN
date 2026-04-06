@@ -7,11 +7,9 @@ from PIL import Image
 from torchvision.transforms import ToTensor, Resize, Compose
 
 class MyAnimalDataset(Dataset):
-    def __init__(self, root, is_train=True, transform=None):
-        if is_train:
-            data_path = os.path.join(root, "train")
-        else:
-            data_path = os.path.join(root, "test")
+    def __init__(self, root, split="train", transform=None):
+        data_path = os.path.join(root, split)
+    
         self.categories = ["butterfly", "cat", "chicken", "cow", "dogs", "elephant", "horse", "sheep", "spider", "squirrel"]
         self.images = []
         self.labels = []
@@ -35,21 +33,3 @@ class MyAnimalDataset(Dataset):
             image = self.transform(image)
         label = self.labels[idx]
         return image, label
-
-if __name__ == '__main__':
-    transform = Compose([
-        ToTensor(),
-        Resize((224, 224))
-    ])
-    dataset = MyAnimalDataset(root="./data/Animal", transform=transform)
-
-    dataloader = DataLoader(
-        dataset=dataset,
-        batch_size=8,
-        shuffle=True,
-        num_workers=4,
-        drop_last=True
-    )
-    for images, labels in dataloader:
-        print(images.shape, labels.shape)
-        break
